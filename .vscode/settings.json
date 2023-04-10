@@ -2,6 +2,7 @@
     "files.associations": {
         "*.ejs": "html",
         "ostream": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "cmath": "cpp"
     }
 }

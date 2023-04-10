@@ -149,9 +149,6 @@ int main(int argc, char *argv[])
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
 
-	glm::vec3 cubePos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
-
 	// 循环渲染, 在GLFW退出前一直保持运行
 	while (!glfwWindowShouldClose(window))
 	{
@@ -168,6 +165,11 @@ int main(int argc, char *argv[])
 
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+
+		float angle = glm::radians(60.0f) * (float)glfwGetTime();
+
+		glm::vec3 cubePos = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 lightPos = glm::vec3(2.0f * sin(angle), 1.0f, 2.0f * cos(angle));
 
 		// 处理物体
 		glm::mat4 model = glm::mat4(1.0f);
