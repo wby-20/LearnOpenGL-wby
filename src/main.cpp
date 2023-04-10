@@ -10,9 +10,8 @@
 #include <camera.h>
 #include <texture.h>
 
-#define WIDTH 800
-#define HEIGHT 600
-
+#define WIDTH 1600
+#define HEIGHT 920
 float weight = 0.5;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f,  3.0f);
@@ -175,8 +174,8 @@ int main(int argc, char *argv[])
 		process_input(window);
 
 		// 设置清空屏幕的颜色并清空屏幕
-		glClearColor(0.1f, 0.1f, 0.1f, 0.1f);					// 状态设置函数
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 状态使用函数
+		glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
@@ -184,19 +183,18 @@ int main(int argc, char *argv[])
 		// 处理物体
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, cubePos);
-		model = glm::scale(model, glm::vec3(2.0f));
 
 		// 传输数据
 		objectShader.use();
-		objectShader.setInt("texture1", 0);
-		objectShader.setInt("texture2", 1);
-		objectShader.setFloat("weight", 0.5f);
 		objectShader.setVec3("lightColor", 1, glm::vec3(1.0f, 1.0f, 1.0f));
-		objectShader.setVec3("objectColor", 1, glm::vec3(0.0f, 0.5f, 0.31f));
+		objectShader.setVec3("objectColor", 1, glm::vec3(1.0f, 0.5f, 0.31f));
 		objectShader.setMat4("model", 1, false, model);
 		objectShader.setMat4("view", 1, false, view);
 		objectShader.setMat4("projection", 1, false, projection);
 		
+		glBindVertexArray(objectVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		// 处理灯光
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, lightPos);
@@ -216,6 +214,7 @@ int main(int argc, char *argv[])
 	}
 
 	glDeleteVertexArrays(1, &objectVAO);
+	glDeleteVertexArrays(1, &lightVAO);
 	glDeleteBuffers(1, &VBO);
 	// 释放分配的所有资源
 	glfwTerminate();
