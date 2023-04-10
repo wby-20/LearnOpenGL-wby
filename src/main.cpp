@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 	// 忽略鼠标指针
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// 创建着色器对象
-	Shader objectShader("include/shader.vs", "include/shader.fs");
-	Shader lightShader("include/lightShader.vs", "include/lightShader.fs");
+	Shader objectShader("include/shader/shader.vs", "include/shader/shader.fs");
+	Shader lightShader("include/shader/lightShader.vs", "include/shader/lightShader.fs");
 
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
