@@ -177,6 +177,8 @@ int main(int argc, char *argv[])
 		objectShader.use();
 		objectShader.setVec3("lightColor", 1, glm::vec3(1.0f, 1.0f, 1.0f));
 		objectShader.setVec3("objectColor", 1, glm::vec3(1.0f, 0.5f, 0.31f));
+		objectShader.setVec3("lightPos", 1, lightPos);
+		objectShader.setVec3("viewPos", 1, camera.Position);
 		objectShader.setMat4("model", 1, false, model);
 		objectShader.setMat4("view", 1, false, view);
 		objectShader.setMat4("projection", 1, false, projection);
