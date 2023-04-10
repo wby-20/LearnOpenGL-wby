@@ -26,17 +26,16 @@ float yaw = -90.0f; // 水平角
 
 Camera camera(cameraPos, cameraUp, yaw, pitch);
 // 鼠标上一帧位置
-float lastX = 400, lastY = 300;
+float lastX = WIDTH / 2, lastY = HEIGHT / 2;
 bool firstMouse = true;
 
 // 用户改变窗口大小时的回调函数
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 // 鼠标的回调
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 // 处理用户输入
 void process_input(GLFWwindow *window);
-// 读入材质
-void load_texture();
 
 int main(int argc, char *argv[])
 {
@@ -152,6 +151,7 @@ int main(int argc, char *argv[])
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// 注册鼠标的回调函数
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	// glm::vec3 cubePositions[] = {
 	// 	glm::vec3(0.0f, 0.0f, 0.0f),
@@ -246,6 +246,11 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 	lastY = ypos;
 
 	camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
 }
 
 void process_input(GLFWwindow *window)
