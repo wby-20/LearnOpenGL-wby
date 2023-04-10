@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-
 	// 创建窗口对象
 	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World", NULL, NULL);
 	if (window == NULL)
@@ -58,7 +57,6 @@ int main(int argc, char *argv[])
 	}
 	// 将窗口上下文设置为当前线程主上下文
 	glfwMakeContextCurrent(window);
-
 	// 初始化GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -66,8 +64,17 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	// 设置窗口维度
+	glViewport(0, 0, WIDTH, HEIGHT);
+	// 开启深度测试
+	glEnable(GL_DEPTH_TEST);
+	//注册回调函数
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); //窗口大小
+	glfwSetCursorPosCallback(window, mouse_callback); // 鼠标移动
+	glfwSetScrollCallback(window, scroll_callback); // 鼠标滚轮
 	// 忽略鼠标指针
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	// 创建着色器对象
 	Shader objectShader("include/shader/shader.vs", "include/shader/shader.fs");
 	Shader lightShader("include/shader/lightShader.vs", "include/shader/lightShader.fs");
@@ -115,17 +122,17 @@ int main(int argc, char *argv[])
 		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f};
 
-	// 创建顶点数组, 顶点缓冲, 顶点索引缓冲
-	unsigned int VAO, VBO;
+	// VBO
+	unsigned int VBO;
 	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-
-	// 绑定VAO
-	glBindVertexArray(VAO);
-	// 绑定VBO, 顶点数据复制到缓冲内存中
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	// 物体VAO
+	unsigned int objectVAO;
+	glGenVertexArrays(1, &objectVAO);
+	glBindVertexArray(objectVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// 位置
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
@@ -133,25 +140,14 @@ int main(int argc, char *argv[])
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	// 灯光
-	unsigned int lightVAO = 1;
+	// 灯光VAO
+	unsigned int lightVAO;
 	glGenVertexArrays(1, &lightVAO);
 	glBindVertexArray(lightVAO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	
+	// 光源只有位置
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
-
-	// 设置窗口维度
-	glViewport(0, 0, WIDTH, HEIGHT);
-	// 开启深度测试
-	glEnable(GL_DEPTH_TEST);
-	//注册调整窗口大小的回调函数
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	// 注册鼠标的回调函数
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
 
 	// glm::vec3 cubePositions[] = {
 	// 	glm::vec3(0.0f, 0.0f, 0.0f),
@@ -211,7 +207,7 @@ int main(int argc, char *argv[])
 		lightShader.setMat4("view", 1, false, view);
 		lightShader.setMat4("projection", 1, false, projection);
 
-		glBindVertexArray(VAO); //绑定VAO
+		glBindVertexArray(objectVAO); //绑定VAO
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// 交换颜色缓冲, 用来绘制. 并且检测是否有事件发生
@@ -219,7 +215,7 @@ int main(int argc, char *argv[])
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &objectVAO);
 	glDeleteBuffers(1, &VBO);
 	// 释放分配的所有资源
 	glfwTerminate();
