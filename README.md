@@ -2,11 +2,11 @@
 
 学习LearnOpenGL并尝试复现一下代码（
 
-**原版英文教程: **[Learn OpenGL,](https://learnopengl.com/)
+**原版英文教程:** [Learn OpenGL,](https://learnopengl.com/)
 
-**中文版文档: **[LearnOpenGL CN ](https://learnopengl-cn.github.io/)
+**中文版文档:** [LearnOpenGL CN ](https://learnopengl-cn.github.io/)
 
-**中文版文档仓库: **[LearnOpenGL-CN/LearnOpenGL-CN](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)
+**中文版文档仓库:** [LearnOpenGL-CN/LearnOpenGL-CN](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)
 
 ## 依赖库
 
