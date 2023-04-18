@@ -163,28 +163,44 @@ int main(int argc, char *argv[])
 		glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// 视角
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
-		float angle = glm::radians(60.0f) * (float)glfwGetTime();
-
+		// 物体
 		glm::vec3 cubePos = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 lightPos = glm::vec3(2.0f * sin(angle), 1.0f, 2.0f * cos(angle));
-
-		// 处理物体
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, cubePos);
+
+		// 光照
+		// float angle = glm::radians(60.0f) * (float)glfwGetTime();
+		float angle = glm::radians(15.0f);
+		glm::vec3 lightPos = glm::vec3(2.0f * sin(angle), 1.0f, 2.0f * cos(angle));
+		glm::vec3 lightColor = glm::vec3(sin((float)glfwGetTime() * 2.0f), cos((float)glfwGetTime() * 1.0f), cos((float)glfwGetTime() * 3.0f));
+		glm::vec3 lightAmbientColor = lightColor * 0.5f;
+		glm::vec3 lightDiffuseColor = lightColor * 0.1f;
 
 		// 传输数据
 		objectShader.use();
 		objectShader.setVec3("lightColor", 1, glm::vec3(1.0f, 1.0f, 1.0f));
 		objectShader.setVec3("objectColor", 1, glm::vec3(1.0f, 0.5f, 0.31f));
-		objectShader.setVec3("lightPos", 1, lightPos);
 		objectShader.setVec3("viewPos", 1, camera.Position);
 		objectShader.setMat4("model", 1, false, model);
 		objectShader.setMat4("view", 1, false, view);
 		objectShader.setMat4("projection", 1, false, projection);
+
+		// 物体材质
+		objectShader.setVec3("material.ambient", 1, glm::vec3(0.24725, 0.1995, 0.0745));
+		objectShader.setVec3("material.diffuse", 1, glm::vec3(0.75164, 0.60648, 0.22648));
+		objectShader.setVec3("material.specular", 1, glm::vec3(0.628281, 0.555802, 0.366065));
+		objectShader.setFloat("material.shininess", 32.0f);
 		
+		// 光照材质
+		objectShader.setVec3("light.position", 1, lightPos);
+		objectShader.setVec3("light.ambient", 1, lightAmbientColor);
+		objectShader.setVec3("light.diffuse", 1, lightDiffuseColor);
+		objectShader.setVec3("light.specular", 1, glm::vec3(1.0f, 1.0f, 1.0f));
+
 		glBindVertexArray(objectVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 

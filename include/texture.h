@@ -33,7 +33,7 @@ Texture::Texture(const char* path)
     // 加载图片
 	int width, height, nrChannals;
 	stbi_set_flip_vertically_on_load(true);
-	// 主义这里的 STBI_rgh 需要和下边的 GL_RGB 统一
+	// 注意这里的 STBI_rgh 需要和下边的 GL_RGB 统一
 	unsigned char *data = stbi_load(path, &width, &height, &nrChannals, STBI_rgb);
 	std::cout << width << " " << height << std::endl;
 	if (data)
