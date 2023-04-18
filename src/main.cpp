@@ -173,17 +173,15 @@ int main(int argc, char *argv[])
 		model = glm::translate(model, cubePos);
 
 		// 光照
-		// float angle = glm::radians(60.0f) * (float)glfwGetTime();
-		float angle = glm::radians(15.0f);
+		float angle = glm::radians(60.0f) * (float)glfwGetTime();
+		// float angle = glm::radians(15.0f);
 		glm::vec3 lightPos = glm::vec3(2.0f * sin(angle), 1.0f, 2.0f * cos(angle));
-		glm::vec3 lightColor = glm::vec3(sin((float)glfwGetTime() * 2.0f), cos((float)glfwGetTime() * 1.0f), cos((float)glfwGetTime() * 3.0f));
-		glm::vec3 lightAmbientColor = lightColor * 0.5f;
-		glm::vec3 lightDiffuseColor = lightColor * 0.1f;
+		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 lightAmbientColor = lightColor;
+		glm::vec3 lightDiffuseColor = lightColor;
 
 		// 传输数据
 		objectShader.use();
-		objectShader.setVec3("lightColor", 1, glm::vec3(1.0f, 1.0f, 1.0f));
-		objectShader.setVec3("objectColor", 1, glm::vec3(1.0f, 0.5f, 0.31f));
 		objectShader.setVec3("viewPos", 1, camera.Position);
 		objectShader.setMat4("model", 1, false, model);
 		objectShader.setMat4("view", 1, false, view);
@@ -193,7 +191,7 @@ int main(int argc, char *argv[])
 		objectShader.setVec3("material.ambient", 1, glm::vec3(0.24725, 0.1995, 0.0745));
 		objectShader.setVec3("material.diffuse", 1, glm::vec3(0.75164, 0.60648, 0.22648));
 		objectShader.setVec3("material.specular", 1, glm::vec3(0.628281, 0.555802, 0.366065));
-		objectShader.setFloat("material.shininess", 32.0f);
+		objectShader.setFloat("material.shininess", 4.0f);
 		
 		// 光照材质
 		objectShader.setVec3("light.position", 1, lightPos);

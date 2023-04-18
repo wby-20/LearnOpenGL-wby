@@ -24,9 +24,6 @@ out vec4 FragColor;
 uniform Material material;
 uniform Light light;
 
-uniform vec3 objectColor;
-uniform vec3 lightColor;
-
 uniform vec3 viewPos;
 
 void main()
@@ -49,6 +46,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), Shininess);
     vec3 specular = spec * light.specular * material.specular;
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
 }
