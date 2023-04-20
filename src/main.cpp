@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 	// 加载纹理图片
 	Texture diffuseTex("texture/container2.png");
 	Texture specularTex("texture/container2_specular.png");
-	// Texture emissionTex("texture/matrix.jpg");
+	Texture emissionTex("texture/matrix.jpg");
 
 	// 循环渲染, 在GLFW退出前一直保持运行
 	while (!glfwWindowShouldClose(window))
@@ -185,9 +185,6 @@ int main(int argc, char *argv[])
 		float angle = glm::radians(60.0f) * (float)glfwGetTime();
 		// float angle = glm::radians(15.0f);
 		glm::vec3 lightPos = glm::vec3(2.0f * sin(angle), 1.0f, 2.0f * cos(angle));
-		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-		glm::vec3 lightAmbientColor = lightColor;
-		glm::vec3 lightDiffuseColor = lightColor;
 
 		// 传输数据
 		objectShader.use();
@@ -196,12 +193,15 @@ int main(int argc, char *argv[])
 		objectShader.setMat4("view", 1, false, view);
 		objectShader.setMat4("projection", 1, false, projection);
 
+		objectShader.setFloat("time", (float)glfwGetTime());
+
 		// 物体材质
 		objectShader.setVec3("material.ambient", 1, glm::vec3(0.24725, 0.1995, 0.2));
 		// objectShader.setVec3("material.diffuse", 1, glm::vec3(0.75164, 0.60648, 0.22648));
 		objectShader.setInt("material.diffuse", 0);
 		// objectShader.setVec3("material.specular", 1, glm::vec3(0.628281, 0.555802, 0.5));
 		objectShader.setInt("material.specular", 1);
+		objectShader.setInt("material.emission", 2);
 		objectShader.setFloat("material.shininess", 64.0f);
 		
 		// 光照材质
@@ -223,14 +223,16 @@ int main(int argc, char *argv[])
 		lightShader.setMat4("view", 1, false, view);
 		lightShader.setMat4("projection", 1, false, projection);
 
+		glBindVertexArray(objectVAO); //绑定VAO
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		// 加载纹理
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseTex.getTexture());
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularTex.getTexture());
-
-		glBindVertexArray(objectVAO); //绑定VAO
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, emissionTex.getTexture());
 
 		// 交换颜色缓冲, 用来绘制. 并且检测是否有事件发生
 		glfwSwapBuffers(window);
