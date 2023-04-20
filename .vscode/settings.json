@@ -3,6 +3,7 @@
         "*.ejs": "html",
         "ostream": "cpp",
         "xiosbase": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "xstring": "cpp"
     }
 }
