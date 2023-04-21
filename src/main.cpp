@@ -186,6 +186,8 @@ int main(int argc, char *argv[])
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		std::cout << sizeof(Texture) << std::endl;
+
 		// 处理用户输入
 		process_input(window);
 

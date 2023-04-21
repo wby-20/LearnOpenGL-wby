@@ -12,13 +12,17 @@
 #include <string>
 #include <iostream>
 
+using namespace std;
+
 class Texture
 {
 private:
     unsigned int texture;
+	string type;
 public:
     Texture(const char* path);
     unsigned int getTexture();
+	string getType();
 };
 
 Texture::Texture(const char* path)
@@ -41,6 +45,8 @@ Texture::Texture(const char* path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
 	{
@@ -52,7 +58,12 @@ Texture::Texture(const char* path)
 
 unsigned int Texture::getTexture()
 {
-    return texture;
+    return this->texture;
+}
+
+string Texture::getType()
+{
+	return this->type;
 }
 
 #endif
