@@ -1,19 +1,22 @@
 #include <stb_image.h>
 #include <iostream>
 #include <cmath>
-#include <string.h>
+#include <string>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <shader.h>
 #include <camera.h>
 #include <texture.h>
+#include <mesh.h>
+#include <model.h>
 
 #define WIDTH 1600
 #define HEIGHT 920
-float weight = 0.5;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
@@ -23,6 +26,8 @@ float lastFrame = 0.0f; // 上一帧的时间
 
 float pitch = 0.0f; // 俯仰角
 float yaw = -90.0f; // 水平角
+
+vector<Texture> Texture::textureHasLoaded = vector<Texture>();
 
 Camera camera(cameraPos, cameraUp, yaw, pitch);
 // 鼠标上一帧位置
@@ -175,9 +180,9 @@ int main(int argc, char *argv[])
 	glEnableVertexAttribArray(0);
 
 	// 加载纹理图片
-	Texture diffuseTex("texture/container2.png");
-	Texture specularTex("texture/container2_specular.png");
-	Texture emissionTex("texture/matrix.jpg");
+	Texture diffuseTex("texture/container2.png", typeDiffuce, "");
+	Texture specularTex("texture/container2_specular.png", typeSpecular, "");
+	Texture emissionTex("texture/matrix.jpg", typeDiffuce, "");
 
 	// 循环渲染, 在GLFW退出前一直保持运行
 	while (!glfwWindowShouldClose(window))

@@ -11,21 +11,33 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
+
+enum textureType
+{
+	typeDiffuce,
+	typeSpecular
+};
 
 class Texture
 {
 private:
-    unsigned int texture;
-	string type;
+    
 public:
-    Texture(const char* path);
+	static vector<Texture> textureHasLoaded;
+
+	unsigned int texture;
+	textureType type;
+	string path;
+
+    Texture(const char* path, textureType type, string directory);
     unsigned int getTexture();
-	string getType();
+	textureType getType();
 };
 
-Texture::Texture(const char* path)
+Texture::Texture(const char* path, textureType type, string directory) : type(type), path(directory)
 {
     glGenTextures(1, &texture);
     // 加载图片
@@ -61,7 +73,7 @@ unsigned int Texture::getTexture()
     return this->texture;
 }
 
-string Texture::getType()
+textureType Texture::getType()
 {
 	return this->type;
 }

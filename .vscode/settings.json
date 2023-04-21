@@ -5,6 +5,10 @@
         "xiosbase": "cpp",
         "cmath": "cpp",
         "xstring": "cpp",
-        "vector": "cpp"
-    }
+        "vector": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp",
+        "string": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

@@ -66,18 +66,26 @@ void Mesh::Draw(Shader shader)
 {
     unsigned int diffuseNum = 1;
     unsigned int specularNum = 1;
-    for(int i = 0; i < textures.size(); i++)
+    const string nameDiffuse = "texture_diffuse";
+    const string nameSpecular = "texture_specular";
+
+    for(unsigned int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
-        string name = textures[i].getType();
+        textureType type = textures[i].getType();
         string number;
-
-        if(name == "texture_diffuse")
+        
+        if(type == typeDiffuce)
+        {
             number = to_string(diffuseNum++);
-        else if(name == "texture_specular")
+            shader.setInt("material." + nameDiffuse + number, i);
+        }
+        else if(type == typeSpecular)
+        {
             number = to_string(specularNum++);
+            shader.setInt("material." + nameSpecular + number, i);
+        }
 
-        shader.setInt("material." + name + number, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].getTexture());
     }
     glActiveTexture(GL_TEXTURE0);
