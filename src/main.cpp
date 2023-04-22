@@ -116,15 +116,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 
 		objectShader.setFloat("time", (float)glfwGetTime());
 
+		objectShader.setFloat("material.shininess", 32.0f);
 		
+		float angle = glm::radians((float)glfwGetTime() * 180.0f);
+
 		// point light 1
-        // objectShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-        // objectShader.setVec3("pointLights[0].ambient", 0.005f, 0.005f, 0.005f);
-        // objectShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-        // objectShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-        // objectShader.setFloat("pointLights[0].c", 1.0f);
-        // objectShader.setFloat("pointLights[0].b", 0.09f);
-        // objectShader.setFloat("pointLights[0].a", 0.032f);
+        objectShader.setVec3("pointLights[0].position", glm::vec3(2.0f * glm::cos(angle), 3.0f, 2.0f * glm::sin(angle)));
+        objectShader.setVec3("pointLights[0].ambient", 0.005f, 0.005f, 0.005f);
+        objectShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        objectShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        objectShader.setFloat("pointLights[0].c", 1.0f);
+        objectShader.setFloat("pointLights[0].b", 0.09f);
+        objectShader.setFloat("pointLights[0].a", 0.032f);
         // // point light 2
         // objectShader.setVec3("pointLights[1].position", pointLightPositions[1]);
         // objectShader.setVec3("pointLights[1].ambient", 0.005f, 0.005f, 0.005f);

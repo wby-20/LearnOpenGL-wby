@@ -101,6 +101,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     
+    cout << "texture size: " << textures.size() << endl;
 
     return Mesh(vertices, indices, textures);
 }
@@ -132,6 +133,7 @@ vector<Texture> Model::loadTextures(aiMaterial *material, aiTextureType type, te
             Texture::textureHasLoaded.push_back(texture);
         }
     }
+
     return textures;
 }
 

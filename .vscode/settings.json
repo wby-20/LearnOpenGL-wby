@@ -8,7 +8,8 @@
         "vector": "cpp",
         "system_error": "cpp",
         "xlocale": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "iostream": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
