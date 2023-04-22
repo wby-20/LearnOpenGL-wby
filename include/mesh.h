@@ -27,7 +27,7 @@ public:
     vector<unsigned int> indices;
     vector<Texture> textures;
 
-    void Draw(Shader shader);
+    void Draw(Shader* shader);
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) : vertices(vertices), indices(indices), textures(textures)
     {
         setupMesh();
@@ -62,7 +62,7 @@ private:
     }
 };
 
-void Mesh::Draw(Shader shader)
+void Mesh::Draw(Shader* shader)
 {
     unsigned int diffuseNum = 1;
     unsigned int specularNum = 1;
@@ -74,25 +74,28 @@ void Mesh::Draw(Shader shader)
         glActiveTexture(GL_TEXTURE0 + i);
         textureType type = textures[i].getType();
         string number;
+        string name;
         
         if(type == typeDiffuce)
         {
             number = to_string(diffuseNum++);
-            shader.setInt("material." + nameDiffuse + number, i);
+            name = "texture_diffuse";
         }
         else if(type == typeSpecular)
         {
             number = to_string(specularNum++);
-            shader.setInt("material." + nameSpecular + number, i);
+            name = "texture_specular";
         }
 
+        shader->setInt(name + number, i);
         glBindTexture(GL_TEXTURE_2D, textures[i].getTexture());
     }
-    glActiveTexture(GL_TEXTURE0);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
+    glActiveTexture(GL_TEXTURE0);
 }
 
 #endif

@@ -42,8 +42,8 @@ Texture::Texture(const char* path, textureType type, string directory) : type(ty
     glGenTextures(1, &texture);
     // 加载图片
 	int width, height, nrChannals;
-	stbi_set_flip_vertically_on_load(true);
-	// 注意这里的 STBI_rgh 需要和下边的 GL_RGB 统一
+	// stbi_set_flip_vertically_on_load(true);
+	// 注意这里的 STBI_rgb 需要和下边的 GL_RGB 统一
 	unsigned char *data = stbi_load(path, &width, &height, &nrChannals, STBI_rgb);
 	std::cout << width << " " << height << std::endl;
 	if (data)
@@ -57,8 +57,6 @@ Texture::Texture(const char* path, textureType type, string directory) : type(ty
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	else
 	{

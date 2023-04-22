@@ -20,8 +20,8 @@ using namespace std;
 class Model
 {
 public:
-    Model(char *path) {LoadModel(path);}
-    void Draw(Shader shader)
+    Model(const char *path) {LoadModel(path);}
+    void Draw(Shader* shader)
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
@@ -29,7 +29,7 @@ public:
 
 private:
     vector<Mesh> meshes; // 模型包含的多个mesh
-    string directory; // 存储路径
+    string directory; // 模型的文件夹!!!
 
     void LoadModel(string path);
     void processNode(aiNode* node, const aiScene* scene);
@@ -39,12 +39,12 @@ private:
 
 void Model::LoadModel(string path)
 {
-    Assimp::Importer import;
-    const aiScene * scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
-        cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
+        cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
         return;
     }
 
@@ -56,7 +56,7 @@ void Model::LoadModel(string path)
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
     // 处理mesh
-    for(unsigned int i = 0; i < scene->mNumMeshes; i++)
+    for(unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]]; // 结点存的是mesh的索引
         meshes.push_back(processMesh(mesh, scene));
@@ -76,7 +76,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     {
         Vertex vertex;
         vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-        vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+
+        if(mesh->HasNormals())
+            vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+        
         if(mesh->mTextureCoords[0])
             vertex.TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
         else
@@ -90,15 +93,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
             indices.push_back(face.mIndices[j]);
     }
 
-    if(mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE, typeDiffuce);
-        vector<Texture> specularMaps = loadTextures(material, aiTextureType_DIFFUSE, typeSpecular);
+    
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE, typeDiffuce);
+    vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR, typeSpecular);
 
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    }
+    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    
 
     return Mesh(vertices, indices, textures);
 }
@@ -108,13 +110,15 @@ vector<Texture> Model::loadTextures(aiMaterial *material, aiTextureType type, te
     vector<Texture> textures;
     for(unsigned int i = 0; i < material->GetTextureCount(type); i++)
     {
-        aiString path;
-        material->GetTexture(type, i, &path);
+        aiString name;
+        material->GetTexture(type, i, &name);
         bool flag = true;
 
-        for(int k = 0; k < Texture::textureHasLoaded.size(); k++)
+        string path = this->directory + "/" + name.C_Str();
+
+        for(unsigned int k = 0; k < Texture::textureHasLoaded.size(); k++)
         {
-            if(strcmp(Texture::textureHasLoaded[k].path.c_str(), path.C_Str()) == 0)
+            if(strcmp(Texture::textureHasLoaded[k].path.c_str(), path.c_str()) == 0)
             {
                 textures.push_back(Texture::textureHasLoaded[k]);
                 flag = false;
@@ -123,7 +127,7 @@ vector<Texture> Model::loadTextures(aiMaterial *material, aiTextureType type, te
         }
         if(flag)
         {
-            Texture texture = Texture(path.C_Str(), typeName, directory);
+            Texture texture = Texture(path.c_str(), typeName, path);
             textures.push_back(texture);
             Texture::textureHasLoaded.push_back(texture);
         }
